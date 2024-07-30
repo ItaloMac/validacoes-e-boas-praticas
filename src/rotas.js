@@ -4,7 +4,7 @@ const validarCorpoRequisicao = require('./intermediarios/validarCorpoRequisicao'
 
 const rotas = express()
 
-rotas.post('/usuario', validarCorpoRequisicao ,cadastrarUsuario)
-rotas.get('/usario', listarUsuarios)
+rotas.post('/usuario' ,cadastrarUsuario)
+rotas.get('/usario',listarUsuarios)
 
 module.exports = rotas

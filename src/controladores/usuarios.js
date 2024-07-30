@@ -1,4 +1,5 @@
 const {usuarios} = require('../bancodedados')
+const joi = require('joi')
 
 const listarUsuarios = async (req,res) => {
     return res.json(usuarios)
@@ -6,27 +7,28 @@ const listarUsuarios = async (req,res) => {
 
 const cadastrarUsuario = async (req,res) => {
     const {nome,email,senha} = req.body
-    if (!nome) {
-        return res.status(400).json({mensagem: "O campo nome é obrigatorio"})
-    }
-
-    if (!email) {
-        return res.status(400).json({mensagem: "O campo email é obrigatorio"})
-    }
-
-    if (!senha) {
-        return res.status(400).json({mensagem: "O campo senhaé obrigatorio"})
-    }
     
-    const novoUsuario = {
-        nome,
-        email,
-        senha
-    }
+    try {
+        const schemaUsuario = joi.object({
+            nome:joi.string().min(5).required(),
+            email:joi.string().email().required(),
+            senha:joi.string().min(5).required()
+        })
 
-    usuarios.push(novoUsuario)
+        await schemaUsuario.validateAsync(req.body)
+        
+        const novoUsuario = {
+            nome,
+            email,
+            senha
+        }
     
-    return res.status(201).json(novoUsuario)
+        usuarios.push(novoUsuario)
+        
+        return res.status(201).json(novoUsuario)
+    } catch(error) {
+        return res.status(400).json({mensagem: error.message})
+    }
 }
 
 module.exports = {
